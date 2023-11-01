@@ -12,8 +12,9 @@
   
   <!-- links or URLs are always GET resources as they are getting (retrieving) a resource -->
   <a href="/">Home</a>
-  <a href="/page1">Page 1</a>
-  <a href="/page3">Page 3</a>
+  <a href="/page1">Show Cats</a>
+  <a href="/page4">Show Dogs</a>
+  <a href="/page3">Create/Search Dogs</a>
   
   <form action="/setName" method="POST">
     <label for="firstname">First name:</label>
@@ -22,6 +23,7 @@
     <input type="text" name="lastname" value="">
     <label for="beds">Beds:</label>
     <input type="number" name="beds" value="">
+    <input type="hidden" name="animal" value="cat">
     <input type="submit" value="submit">
   </form>
   
@@ -36,9 +38,10 @@
   <br/>
   <br/>
   
-  <form action="findByName" method="GET">
+  <form action="/findByName" method="GET">
     <label for="name">Name to search for:</label>
     <input type="text" name="name" value="">
+    <input type="hidden" name="animal" value="cat">
     <input type="submit" value="Submit">
   </form>
 </body>

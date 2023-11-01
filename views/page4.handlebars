@@ -4,19 +4,19 @@
   <title>{{title}}</title>
 </head>
 <body>
-  <h1>Welcome to page1</h1>
+  <h1>Welcome to page4</h1>
   
   <!-- links or URLs are always GET resources as they are getting (retrieving) a resource -->
   <a href="/">Home</a>
-  <a href="/page4">Show Dogs</a>
+  <a href="/page1">Show Cats</a>
   <a href="/page2">Create/Search Cats</a>
   <a href="/page3">Create/Search Dogs</a>
   <a href="/getName">Show Name</a>
   
-  {{#if cats}}
+  {{#if dogs}}
     <ul>
-      {{#each cats}}
-        <li> {{this.name}} has {{this.bedsOwned}} beds</li>
+      {{#each dogs}}
+        <li> {{this.name}} is {{this.age}} years old and is a {{this.breed}}</li>
       {{/each}}
     </ul>
   {{/if}}
