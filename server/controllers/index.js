@@ -6,14 +6,19 @@ const { Cat } = models;
 const { Dog } = models;
 
 // default fake data so that we have something to work with until we make a real Cat
-const defaultData = {
+const defaultCatData = {
   name: 'unknown',
   bedsOwned: 0,
 };
+const defaultDogData = {
+  name: 'unknown',
+  age: 0,
+  breed: 'monster',
+};
 
 // object for us to keep track of the last Cat we made and dynamically update it sometimes
-let lastAddedCat = new Cat(defaultData);
-const lastAddedDog = new Dog(defaultData);
+let lastAddedCat = new Cat(defaultCatData);
+let lastAddedDog = new Dog(defaultDogData);
 
 // Function to handle rendering the index page.
 const hostIndex = (req, res) => {
@@ -119,8 +124,8 @@ const setName = async (req, res) => {
      we define a name and bedsOwned. We don't need to define the createdDate, because the
      default Date.now function will populate that value for us later.
   */
-  let catData; let
-    dogData;
+  let catData; 
+  let dogData;
   if (req.body.animal === 'cat') {
     catData = {
       name: `${req.body.firstname} ${req.body.lastname}`,
@@ -140,8 +145,8 @@ const setName = async (req, res) => {
 
      Note that this does NOT store the cat in the database. That is the next step.
   */
-  let newCat; let
-    newDog;
+  let newCat; 
+  let newDog;
   if (req.body.animal === 'cat') { newCat = new Cat(catData); } else { newDog = new Dog(dogData); }
 
   /* We have now setup a cat in the right format. We now want to store it in the database.
@@ -165,15 +170,23 @@ const setName = async (req, res) => {
        as being our "if the try worked"
     */
     console.log(err);
-    if (req.body.animal === 'cat') { return res.status(500).json({ error: 'failed to create cat' }); }
-    return res.status(500).json({ error: 'failed to create dog' });
+    if (req.body.animal === 'cat') 
+    { 
+      if(err.code === 11000) { return res.status(400).json({ error: `there's already a cat with the name '${catData.name}'`,});  }
+      return res.status(500).json({ error: 'failed to create cat', message: err }); 
+    }
+    else{
+      if(err.code === 11000) { return res.status(400).json({ error: `there's already a cat with the name '${dogData.name}'`,});  }
+      return res.status(500).json({ error: 'failed to create dog', message: err });
+    }
+    
   }
 
   /* After our await has resolved, and if no errors have occured during the await, we will end
      up here. We will update our lastAdded cat to the one we just added. We will then send that
      cat's data to the client.
   */
-  if (req.body.animal === 'cat') { lastAddedCat = newCat; } else { lastAddedCat = newDog; }
+  if (req.body.animal === 'cat') { lastAddedCat = newCat; } else { lastAddedDog = newDog; }
 
   if (req.body.animal === 'cat') {
     return res.json({
