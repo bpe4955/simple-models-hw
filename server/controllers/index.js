@@ -103,7 +103,11 @@ const hostPage4 = async (req, res) => {
 };
 
 // Get name will return the name of the last added cat.
-const getName = (req, res) => res.json({ name: lastAddedCat.name });
+const getName = (req, res) => {
+  if (req.query.animal === 'cat') { return res.json({ name: lastAddedCat.name }); }
+  if (req.query.animal === 'dog') { return res.json({ name: lastAddedDog.name }); }
+  return res.status(400).json({ error: 'request either a cat or dog animal' });
+};
 
 // Function to create a new cat in the database
 const setName = async (req, res) => {
@@ -124,7 +128,7 @@ const setName = async (req, res) => {
      we define a name and bedsOwned. We don't need to define the createdDate, because the
      default Date.now function will populate that value for us later.
   */
-  let catData; 
+  let catData;
   let dogData;
   if (req.body.animal === 'cat') {
     catData = {
@@ -145,7 +149,7 @@ const setName = async (req, res) => {
 
      Note that this does NOT store the cat in the database. That is the next step.
   */
-  let newCat; 
+  let newCat;
   let newDog;
   if (req.body.animal === 'cat') { newCat = new Cat(catData); } else { newDog = new Dog(dogData); }
 
@@ -170,16 +174,13 @@ const setName = async (req, res) => {
        as being our "if the try worked"
     */
     console.log(err);
-    if (req.body.animal === 'cat') 
-    { 
-      if(err.code === 11000) { return res.status(400).json({ error: `there's already a cat with the name '${catData.name}'`,});  }
-      return res.status(500).json({ error: 'failed to create cat', message: err }); 
+    if (req.body.animal === 'cat') {
+      if (err.code === 11000) { return res.status(400).json({ error: `there's already a cat with the name '${catData.name}'` }); }
+      return res.status(500).json({ error: 'failed to create cat', message: err });
     }
-    else{
-      if(err.code === 11000) { return res.status(400).json({ error: `there's already a cat with the name '${dogData.name}'`,});  }
-      return res.status(500).json({ error: 'failed to create dog', message: err });
-    }
-    
+
+    if (err.code === 11000) { return res.status(400).json({ error: `there's already a cat with the name '${dogData.name}'` }); }
+    return res.status(500).json({ error: 'failed to create dog', message: err });
   }
 
   /* After our await has resolved, and if no errors have occured during the await, we will end
