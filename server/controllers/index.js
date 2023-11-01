@@ -179,7 +179,7 @@ const setName = async (req, res) => {
       return res.status(500).json({ error: 'failed to create cat', message: err });
     }
 
-    if (err.code === 11000) { return res.status(400).json({ error: `there's already a cat with the name '${dogData.name}'` }); }
+    if (err.code === 11000) { return res.status(400).json({ error: `there's already a dog with the name '${dogData.name}'` }); }
     return res.status(500).json({ error: 'failed to create dog', message: err });
   }
 
